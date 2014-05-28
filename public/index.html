@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form#text_input { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form#text_input input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form#text_input button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #messages { margin-bottom: 40px }
+    </style>
+    <link rel="stylesheet" href="/rover.css" />
+  </head>
+  <body>
+
+
+	<div align="center">
+
+        <img id="imagestream" src=""/>
+
+	<table class="button" padding=5>
+		<tr align="center">
+			<td></td><!--<td id="FL" class="button">FL</td>-->
+			<td id="F" class="button">F</td>
+			<td></td><!--<td id="FR" class="button">FR</td>-->
+		</tr>
+		<tr align="center">
+			<td id="SL" class="button">L</td>
+			<td id="ST" class="button">S</td>
+			<td id="SR" class="button">R</td>
+		</tr>
+		<tr align="center">
+			<td></td><!--<td id="RL" class="button">RL</td>-->
+			<td id="R" class="button">B</td>
+			<td></td><!--<td id="RR" class="button">RR</td>-->
+		</tr>
+	</table>
+	</div>
+<div id="status2" align="center"></div>
+
+
+    <ul id="messages"></ul>
+    <form id="text_input" action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $(function () {
+        var socket = io();
+        $('form').submit(function(){
+          socket.emit('chat message', $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+        socket.on('chat message', function(msg){
+          $('#messages').append($('<li>').text(msg));
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+      });
+    </script>
+    <script>
+      var socket = io();
+      $("#F").bind("mousedown", function() {
+        fwd();
+      });
+      $("#F").bind("mouseup", function() {
+        stop();
+      });
+
+
+      function fwd() {
+        socket.emit('chat message', 'p 13 200');
+      };
+
+      function stop() {
+        socket.emit('chat message', 'p 13 0');
+      }
+          
+    </script>
+  </body>
+</html>
