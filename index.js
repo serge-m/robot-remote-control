@@ -35,6 +35,11 @@ io.on('connection', function(socket){
     io.emit('chat message', msg);
   });
 
+  socket.on('command', function(msg){
+    console.log('command: ' + msg);
+    io.emit('command', msg);
+  });
+
   socket.on('disconnect', function(socket) {
     console.log('user disconnected');
   });

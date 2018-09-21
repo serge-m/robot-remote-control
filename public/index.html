@@ -1,87 +1,116 @@
 <!doctype html>
 <html>
-  <head>
+<head>
     <title>Socket.IO chat</title>
-    <style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form#text_input { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form#text_input input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form#text_input button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-      #messages { margin-bottom: 40px }
-    </style>
-    <link rel="stylesheet" href="/rover.css" />
-  </head>
-  <body>
+
+    <link rel="stylesheet" href="rover.css"/>
+    <link rel="stylesheet" href="chat.css"/>
+</head>
+<body>
 
 
-	<div align="center">
+<div align="center">
 
-        <img id="imagestream" src=""/>
+    <img id="imagestream" src=""/>
 
-	<table class="button" padding=5>
-		<tr align="center">
-			<td></td><!--<td id="FL" class="button">FL</td>-->
-			<td id="F" class="button">F</td>
-			<td></td><!--<td id="FR" class="button">FR</td>-->
-		</tr>
-		<tr align="center">
-			<td id="SL" class="button">L</td>
-			<td id="ST" class="button">S</td>
-			<td id="SR" class="button">R</td>
-		</tr>
-		<tr align="center">
-			<td></td><!--<td id="RL" class="button">RL</td>-->
-			<td id="R" class="button">B</td>
-			<td></td><!--<td id="RR" class="button">RR</td>-->
-		</tr>
-	</table>
-	</div>
+    <table class="button" padding=5>
+        <tr align="center">
+            <td></td><!--<td id="FL" class="button">FL</td>-->
+            <td id="button_fwd" class="button">F</td>
+            <td></td><!--<td id="FR" class="button">FR</td>-->
+        </tr>
+        <tr align="center">
+            <td id="button_left" class="button">L</td>
+            <td id="button_stop" class="button">S</td>
+            <td id="button_right" class="button">R</td>
+        </tr>
+        <tr align="center">
+            <td></td><!--<td id="RL" class="button">RL</td>-->
+            <td id="button_bwd" class="button">B</td>
+            <td></td><!--<td id="RR" class="button">RR</td>-->
+        </tr>
+    </table>
+</div>
 <div id="status2" align="center"></div>
 
 
+<div id="chat">
     <ul id="messages"></ul>
-    <form id="text_input" action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
 
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-    <script>
-      $(function () {
-        var socket = io();
-        $('form').submit(function(){
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
-        });
-        socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      });
-    </script>
-    <script>
-      var socket = io();
-      $("#F").bind("mousedown", function() {
-        fwd();
-      });
-      $("#F").bind("mouseup", function() {
-        stop();
-      });
+</div>
+
+<form id="text_input" action="">
+    <input id="m" autocomplete="off"/>
+    <button>Send</button>
+</form>
 
 
-      function fwd() {
-        socket.emit('chat message', 'p 13 200');
-      };
+<script src="js/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script>
+  $(function () {
+    var socket = io();
+    $('form').submit(function () {
+      socket.emit('chat message', $('#m').val());
+      $('#m').val('');
+      return false;
+    });
+    socket.on('chat message', function (msg) {
+      $('#messages').append($('<li>').text(msg));
+      scrollToBottom($('#chat'));
+    });
 
-      function stop() {
-        socket.emit('chat message', 'p 13 0');
-      }
-          
-    </script>
-  </body>
+    socket.on('command', function (msg) {
+      $('#messages').append($('<li>').text('command: ' + msg));
+      scrollToBottom($('#chat'));
+    });
+  });
+
+  function scrollToBottom(element) {
+    element.scrollTop(element[0].scrollHeight);
+  }
+</script>
+<script>
+  var socket = io();
+  $("#button_fwd").on("mousedown", fwd);
+  $("#button_fwd").on("mouseup", stop);
+  $("#button_fwd").on("mouseout", stop);
+
+  $("#button_bwd").on("mousedown", bwd);
+  $("#button_bwd").on("mouseup", stop);
+  $("#button_bwd").on("mouseout", stop);
+
+  $("#button_left").on("mousedown", left);
+  $("#button_left").on("mouseup", stop);
+  $("#button_left").on("mouseout", stop);
+
+  $("#button_right").on("mousedown", right);
+  $("#button_right").on("mouseup", stop);
+  $("#button_right").on("mouseout", stop);
+
+  $("#button_stop").on("mousedown", stop);
+
+
+  function fwd() {
+    socket.emit('command', 'fwd');
+  }
+
+  function bwd() {
+    socket.emit('command', 'bwd');
+  }
+
+  function left() {
+    socket.emit('command', 'left');
+  }
+
+  function right() {
+    socket.emit('command', 'right');
+  }
+
+  function stop() {
+    socket.emit('command', 'stop');
+  }
+
+</script>
+</body>
 </html>
