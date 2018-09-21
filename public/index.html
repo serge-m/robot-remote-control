@@ -47,9 +47,12 @@
 
 <script src="js/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
 <script>
+  var socket = io();
+
   $(function () {
-    var socket = io();
+
     $('form').submit(function () {
       socket.emit('chat message', $('#m').val());
       $('#m').val('');
@@ -69,27 +72,6 @@
   function scrollToBottom(element) {
     element.scrollTop(element[0].scrollHeight);
   }
-</script>
-<script>
-  var socket = io();
-  $("#button_fwd").on("mousedown", fwd);
-  $("#button_fwd").on("mouseup", stop);
-  $("#button_fwd").on("mouseout", stop);
-
-  $("#button_bwd").on("mousedown", bwd);
-  $("#button_bwd").on("mouseup", stop);
-  $("#button_bwd").on("mouseout", stop);
-
-  $("#button_left").on("mousedown", left);
-  $("#button_left").on("mouseup", stop);
-  $("#button_left").on("mouseout", stop);
-
-  $("#button_right").on("mousedown", right);
-  $("#button_right").on("mouseup", stop);
-  $("#button_right").on("mouseout", stop);
-
-  $("#button_stop").on("mousedown", stop);
-
 
   function fwd() {
     socket.emit('command', 'fwd');
@@ -110,6 +92,29 @@
   function stop() {
     socket.emit('command', 'stop');
   }
+</script>
+<script>
+
+  $("#button_fwd").on("mousedown", fwd);
+  $("#button_fwd").on("mouseup", stop);
+  $("#button_fwd").on("mouseout", stop);
+
+  $("#button_bwd").on("mousedown", bwd);
+  $("#button_bwd").on("mouseup", stop);
+  $("#button_bwd").on("mouseout", stop);
+
+  $("#button_left").on("mousedown", left);
+  $("#button_left").on("mouseup", stop);
+  $("#button_left").on("mouseout", stop);
+
+  $("#button_right").on("mousedown", right);
+  $("#button_right").on("mouseup", stop);
+  $("#button_right").on("mouseout", stop);
+
+  $("#button_stop").on("mousedown", stop);
+
+
+
 
 </script>
 </body>
