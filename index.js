@@ -2,42 +2,39 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+
+
 var port = process.env.PORT || 3000;
 
 
-const {exec} = require('child_process');
-
-function exec_pwm_command(command, on_failure) {
-  const pigs_command = 'pigs ' + command;
-  console.log(pigs_command);
-  exec(pigs_command, (err, stdout, stderr) => {
-    if (err) {
-      console.log(`failed to execite commnad ${command}`); // node couldn't execute the command
-      if (on_failure) {
-        on_failure(err);
-      }
-      return;
-    }
-
-    // the *entire* stdout and stderr (buffered)
-    console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
-  });
+async function exec_pwm_command(command) {
+  const pigs_command = `pigs ${command}`;
+  // if (command === 'p 6 0') {
+  //   throw new Error('BOOOOO');
+  // }
+  const { stdout, stderr } = await exec(pigs_command, );
+  if (stdout) {
+    console.log(`Command ${command} stdout: ${stdout}`);
+  }
+  if (stderr) {
+    throw new Error(`Executing pwm command '${command}' failed. stderr: ${String(stderr).replace('\n', '\\n ')}`);
+  }
 }
 
 function try_stop() {
-  console.log("trying emergency stop");
-  try {
-    exec_pwm_command('p 12 0');
-    console.log("emergency stop part 1");
-  }
-  catch(err) {}
+  console.log("emergency stop started");
 
-  try {
-    exec_pwm_command('p 13 0');
-    console.log("emergency stop part 2");
-  }
-  catch(err) {}
+  exec_pwm_command('p 12 0').catch(e => {
+    console.log(`failure during emergency stop: ${e}`)
+  });
+
+  exec_pwm_command('p 13 0').catch(e => {
+    console.log(`failure during emergency stop: ${e}`)
+  });
+
+  console.log("emergency stop finished");
 }
 
 function exec_command(command, on_failure) {
@@ -51,10 +48,15 @@ function exec_command(command, on_failure) {
 
   const commands = mapping[command];
   if (commands) {
-    commands.forEach(cmd => exec_pwm_command(cmd, (err) => {
-      on_failure(err);
-      setTimeout(try_stop, 500);
-    }));
+    var promises = commands.map(str_command => exec_pwm_command(str_command));
+    Promise.all(promises).then(res => {
+      console.log(`Command ${command} executed successfully. Res: ${res}`);
+    }).catch(err => {
+      console.log(`Command ${command} failed. err ${err}`);
+      try_stop();
+    });
+  } else  {
+    on_failure(`command not found: ${command}`);
   }
 }
 
@@ -65,14 +67,14 @@ io.on('connection', function (socket) {
   console.log('user connected');
 
   socket.on('chat message', function (msg) {
-    console.log('chat message:' + msg);
+    console.log(`chat message: ${msg}`);
     io.emit('chat message', msg);
   });
 
   socket.on('command', function (command) {
-    console.log('command: ' + command);
+    console.log(`command: ${command}`);
     exec_command(command, failure_message => {
-      io.emit('command', 'Error: ' + failure_message)
+      io.emit('command', `Error: ${failure_message}`)
     });
     io.emit('command', command);
   });
