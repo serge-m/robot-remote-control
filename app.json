@@ -1,9 +1,8 @@
 {
-  "name": "Socket-Chat-Example",
-  "description": "my first socket.io app",
-  "website": "https://github.com/socketio/chat-example",
-  "repository": "https://github.com/socketio/chat-example",
-  "logo": "https://node-js-sample.herokuapp.com/node.svg",
+  "name": "robot-remote-control",
+  "description": "RaspberryPi Robot remote control",
+  "website": "https://github.com/serge-m/robot-remote-control",
+  "repository": "https://github.com/serge-m/robot-remote-control",
   "success_url": "/",
   "keywords": [
     "node",
@@ -15,8 +14,5 @@
   "scripts": {
   },
   "addons": [
-  ],
-  "env": {
-    "BUILDPACK_URL": "https://github.com/heroku/heroku-buildpack-nodejs"
-  }
+  ]
 }
