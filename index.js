@@ -11,6 +11,7 @@ var port = process.env.PORT || 3000;
 
 async function exec_pwm_command(command) {
   const pigs_command = `pigs ${command}`;
+  //console.log(`pigs command: ${pigs_command}`)
   // if (command === 'p 6 0') {
   //   throw new Error('BOOOOO');
   // }
@@ -40,9 +41,9 @@ function try_stop() {
 function exec_command(command, on_failure) {
   const mapping = {
     'fwd': ['p 5 0', 'p 6 0', 'p 12 128', 'p 13 128'],
-    'bwd': ['p 5 1', 'p 6 1', 'p 12 128', 'p 13 128'],
-    'left': ['p 5 0', 'p 6 1', 'p 12 128', 'p 13 128'],
-    'right': ['p 5 1', 'p 6 0', 'p 12 128', 'p 13 128'],
+    'bwd': ['p 5 128', 'p 6 128', 'p 12 128', 'p 13 128'],
+    'left': ['p 5 0', 'p 6 128', 'p 12 128', 'p 13 128'],
+    'right': ['p 5 128', 'p 6 0', 'p 12 128', 'p 13 128'],
     'stop': ['p 12 0', 'p 13 0']
   };
 
