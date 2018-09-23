@@ -5,17 +5,16 @@
   "dependencies": {
     "express": "^4.15.2",
     "express-ws": "^3.0.0",
-    "socket.io": "^2.1.0",
     "raspivid-stream": "0.2.1"
   },
   "scripts": {
     "start": "node index.js"
   },
   "keywords": [
-	  "rasbperrypi",
-	  "hardware",
-	  "camera",
-	  "webcam",
-	  "remote control"
-  ] 
+    "rasbperrypi",
+    "hardware",
+    "camera",
+    "webcam",
+    "remote control"
+  ]
 }

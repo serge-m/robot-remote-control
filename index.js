@@ -6,8 +6,6 @@ process.on('uncaughtException', function(err) {
 
 var express = require('express');
 var app = express();
-// var http = require('http').Server(app);
-// var io = require('socket.io')(http);
 const wss = require('express-ws')(app);
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
@@ -24,8 +22,8 @@ app.ws('/video-stream', (ws, req) => {
 
     ws.send(JSON.stringify({
       action: 'init',
-      width: '960',
-      height: '540'
+      width: '640',
+      height: '480'
     }));
 
     var videoStream = raspividStream({ rotation: 180 });
@@ -118,32 +116,13 @@ app.ws('/commands', (ws, req) => {
   });
 
   ws.on('close', () => {
+    console.log('Commands client disconnected');
     connects = connects.filter(conn => {
       return (conn === ws) ? false : true;
     });
   });
 });
-//
-// io.on('connection', function (socket) {
-//   console.log('user connected');
-//
-//   socket.on('chat message', function (msg) {
-//     console.log(`chat message: ${msg}`);
-//     io.emit('chat message', msg);
-//   });
-//
-//   socket.on('command', function (command) {
-//     console.log(`command: ${command}`);
-//     exec_command(command, failure_message => {
-//       io.emit('command', `Error: ${failure_message}`)
-//     });
-//     io.emit('command', command);
-//   });
-//
-//   socket.on('disconnect', function (socket) {
-//     console.log('user disconnected');
-//   });
-// });
+
 
 app.listen(port, function () {
   console.log('listening on *:' + port);
