@@ -1,5 +1,5 @@
 # Raspberry Pi Robot remote control
-Remote controlled robot with camera ob Raspberry Pi Zero
+Remote controlled robot with camera. Based on Raspberry Pi Zero. 
 
 ## Hardware 
 * Raspberry Pi Zero
