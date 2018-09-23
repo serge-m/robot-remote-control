@@ -1,7 +1,13 @@
+process.on('uncaughtException', function(err) {
+  console.log('Caught exception: ' + err);
+  console.log(err.stack);
+});
+
+
 var express = require('express');
 var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+// var http = require('http').Server(app);
+// var io = require('socket.io')(http);
 const wss = require('express-ws')(app);
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
@@ -9,7 +15,7 @@ const raspividStream = require('raspivid-stream');
 
 
 var port = process.env.PORT || 3000;
-
+let connects = [];
 
 
 
@@ -90,26 +96,54 @@ function exec_command(command, on_failure) {
 
 app.use(express.static('public'));
 
-io.on('connection', function (socket) {
-  console.log('user connected');
+app.ws('/commands', (ws, req) => {
+  console.log('Commands client connected');
+  connects.push(ws);
 
-  socket.on('chat message', function (msg) {
-    console.log(`chat message: ${msg}`);
-    io.emit('chat message', msg);
-  });
+  ws.on('message', message => {
+    console.log('Received -', message);
 
-  socket.on('command', function (command) {
-    console.log(`command: ${command}`);
-    exec_command(command, failure_message => {
-      io.emit('command', `Error: ${failure_message}`)
+    const msg = JSON.parse(message);
+
+    console.log(`Received message with type ${msg.type} and value ${msg.value}`);
+
+
+    connects.forEach(socket => {
+      socket.send(message);
     });
-    io.emit('command', command);
+
+    if (msg.type === 'command') {
+      exec_command(msg.value);
+    }
   });
 
-  socket.on('disconnect', function (socket) {
-    console.log('user disconnected');
+  ws.on('close', () => {
+    connects = connects.filter(conn => {
+      return (conn === ws) ? false : true;
+    });
   });
 });
+//
+// io.on('connection', function (socket) {
+//   console.log('user connected');
+//
+//   socket.on('chat message', function (msg) {
+//     console.log(`chat message: ${msg}`);
+//     io.emit('chat message', msg);
+//   });
+//
+//   socket.on('command', function (command) {
+//     console.log(`command: ${command}`);
+//     exec_command(command, failure_message => {
+//       io.emit('command', `Error: ${failure_message}`)
+//     });
+//     io.emit('command', command);
+//   });
+//
+//   socket.on('disconnect', function (socket) {
+//     console.log('user disconnected');
+//   });
+// });
 
 app.listen(port, function () {
   console.log('listening on *:' + port);

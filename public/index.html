@@ -57,28 +57,45 @@
 </form>
 
 
-<script src="js/socket.io.js"></script>
 <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
 
 <script>
-  var socket = io();
+  var HOST = location.origin.replace(/^http/, 'ws') + '/commands';
+  console.log(`using host ${HOST} for commands`);
+  var ws = new WebSocket(HOST);
+
+
+
+  function send_message(message_type, value) {
+    ws.send(JSON.stringify({"type": message_type, "value": value}));
+  }
+
+  function display_message(text) {
+    $('#messages').append($('<li>').text(text));
+    scrollToBottom($('#chat'));
+  }
 
   $(function () {
 
     $('form').submit(function () {
-      socket.emit('chat message', $('#m').val());
+      send_message("chat message", $('#m').val());
       $('#m').val('');
       return false;
     });
-    socket.on('chat message', function (msg) {
-      $('#messages').append($('<li>').text(msg));
-      scrollToBottom($('#chat'));
-    });
 
-    socket.on('command', function (msg) {
-      $('#messages').append($('<li>').text('command: ' + msg));
-      scrollToBottom($('#chat'));
-    });
+    ws.onmessage = function (event) {
+      const msg = JSON.parse(event.data);
+
+      switch (msg.type) {
+        case "chat message":
+          display_message(msg.value);
+          break;
+        case "command":
+          display_message('command: ' + msg.value);
+          break;
+      }
+
+    };
   });
 
   function scrollToBottom(element) {
@@ -86,26 +103,25 @@
   }
 
   function fwd() {
-    socket.emit('command', 'fwd');
+    send_message('command', 'fwd');
   }
 
   function bwd() {
-    socket.emit('command', 'bwd');
+    send_message('command', 'bwd');
   }
 
   function left() {
-    socket.emit('command', 'left');
+    send_message('command', 'left');
   }
 
   function right() {
-    socket.emit('command', 'right');
+    send_message('command', 'right');
   }
 
   function stop() {
-    socket.emit('command', 'stop');
+    send_message('command', 'stop');
   }
-</script>
-<script>
+
 
   function direction_button(button, action) {
     button.on("mousedown", action);
