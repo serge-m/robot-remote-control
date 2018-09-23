@@ -1,12 +1,21 @@
 {
-  "name": "RaspberryPi robot remote control",
+  "name": "robot-remote-control",
   "version": "0.0.1",
   "description": "App for remote control of a robot based on raspberry pi. pigpiod must be running on the raspberry pi to enable PWM.",
   "dependencies": {
     "express": "^4.15.2",
-    "socket.io": "^2.1.0"
+    "express-ws": "^3.0.0",
+    "socket.io": "^2.1.0",
+    "raspivid-stream": "0.2.1"
   },
   "scripts": {
     "start": "node index.js"
-  }
+  },
+  "keywords": [
+	  "rasbperrypi",
+	  "hardware",
+	  "camera",
+	  "webcam",
+	  "remote control"
+  ] 
 }

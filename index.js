@@ -2,11 +2,37 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+const wss = require('express-ws')(app);
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
+const raspividStream = require('raspivid-stream');
 
 
 var port = process.env.PORT || 3000;
+
+
+
+
+app.ws('/video-stream', (ws, req) => {
+    console.log('Video client connected');
+
+    ws.send(JSON.stringify({
+      action: 'init',
+      width: '960',
+      height: '540'
+    }));
+
+    var videoStream = raspividStream({ rotation: 180 });
+
+    videoStream.on('data', (data) => {
+        ws.send(data, { binary: true }, (error) => { if (error) console.error(error); });
+    });
+
+    ws.on('close', () => {
+        console.log('Video client left');
+        videoStream.removeAllListeners('data');
+    });
+});
 
 
 async function exec_pwm_command(command) {
@@ -85,6 +111,6 @@ io.on('connection', function (socket) {
   });
 });
 
-http.listen(port, function () {
+app.listen(port, function () {
   console.log('listening on *:' + port);
 });

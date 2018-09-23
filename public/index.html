@@ -8,10 +8,22 @@
 </head>
 <body>
 
+<div>
+  <canvas width="960" height="540" id="camera_canvas"></canvas>
+</div>
+<script type="text/javascript"
+        src="https://rawgit.com/131/h264-live-player/master/vendor/dist/http-live-player.js"></script>
+<script>
+  var canvas = document.getElementById('camera_canvas');
+
+  var wsavc = new WSAvcPlayer(canvas, "webgl");
+
+  var protocol = window.location.protocol === "https:" ? "wss:" : "ws:"
+  wsavc.connect(protocol + '//' + window.location.host + '/video-stream');
+</script>
+
 
 <div align="center">
-
-  <img id="imagestream" src=""/>
 
   <table class="button" padding=5>
     <tr align="center">
