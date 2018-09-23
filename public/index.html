@@ -1,47 +1,47 @@
 <!doctype html>
 <html>
 <head>
-    <title>Socket.IO chat</title>
+  <title>Socket.IO chat</title>
 
-    <link rel="stylesheet" href="rover.css"/>
-    <link rel="stylesheet" href="chat.css"/>
+  <link rel="stylesheet" href="rover.css"/>
+  <link rel="stylesheet" href="chat.css"/>
 </head>
 <body>
 
 
 <div align="center">
 
-    <img id="imagestream" src=""/>
+  <img id="imagestream" src=""/>
 
-    <table class="button" padding=5>
-        <tr align="center">
-            <td></td><!--<td id="FL" class="button">FL</td>-->
-            <td id="button_fwd" class="button">F</td>
-            <td></td><!--<td id="FR" class="button">FR</td>-->
-        </tr>
-        <tr align="center">
-            <td id="button_left" class="button">L</td>
-            <td id="button_stop" class="button">S</td>
-            <td id="button_right" class="button">R</td>
-        </tr>
-        <tr align="center">
-            <td></td><!--<td id="RL" class="button">RL</td>-->
-            <td id="button_bwd" class="button">B</td>
-            <td></td><!--<td id="RR" class="button">RR</td>-->
-        </tr>
-    </table>
+  <table class="button" padding=5>
+    <tr align="center">
+      <td></td><!--<td id="FL" class="button">FL</td>-->
+      <td id="button_fwd" class="button">F</td>
+      <td></td><!--<td id="FR" class="button">FR</td>-->
+    </tr>
+    <tr align="center">
+      <td id="button_left" class="button">L</td>
+      <td id="button_stop" class="button">S</td>
+      <td id="button_right" class="button">R</td>
+    </tr>
+    <tr align="center">
+      <td></td><!--<td id="RL" class="button">RL</td>-->
+      <td id="button_bwd" class="button">B</td>
+      <td></td><!--<td id="RR" class="button">RR</td>-->
+    </tr>
+  </table>
 </div>
 <div id="status2" align="center"></div>
 
 
 <div id="chat">
-    <ul id="messages"></ul>
+  <ul id="messages"></ul>
 
 </div>
 
 <form id="text_input" action="">
-    <input id="m" autocomplete="off"/>
-    <button>Send</button>
+  <input id="m" autocomplete="off"/>
+  <button>Send</button>
 </form>
 
 
@@ -95,25 +95,22 @@
 </script>
 <script>
 
-  $("#button_fwd").on("mousedown", fwd);
-  $("#button_fwd").on("mouseup", stop);
-  $("#button_fwd").on("mouseout", stop);
+  function direction_button(button, action) {
+    button.on("mousedown", action);
+    button.on("mouseup", stop);
+    button.on("mouseout", stop);
 
-  $("#button_bwd").on("mousedown", bwd);
-  $("#button_bwd").on("mouseup", stop);
-  $("#button_bwd").on("mouseout", stop);
+    button.on("touchstart", action);
+    button.on("touchend", stop);
+  }
 
-  $("#button_left").on("mousedown", left);
-  $("#button_left").on("mouseup", stop);
-  $("#button_left").on("mouseout", stop);
-
-  $("#button_right").on("mousedown", right);
-  $("#button_right").on("mouseup", stop);
-  $("#button_right").on("mouseout", stop);
+  direction_button($("#button_fwd"), fwd);
+  direction_button($("#button_bwd"), bwd);
+  direction_button($("#button_left"), left);
+  direction_button($("#button_right"), right);
 
   $("#button_stop").on("mousedown", stop);
-
-
+  $("#button_stop").on("touchstart", stop);
 
 
 </script>
