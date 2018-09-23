@@ -4,7 +4,13 @@ Remote controlled robot with camera ob Raspberry Pi Zero
 ## Hardware 
 * Raspberry Pi Zero
 * Camera
-* 
+* Controller for DC motors [Pololu DRV8835](https://www.pololu.com/product/2753) or something similar
+
+### GPIO connections:
+* 5 - direction left
+* 12 - speed left
+* 6 - direction right
+* 13 - speed right
 
 
 ## Installation
