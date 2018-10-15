@@ -26,7 +26,7 @@ app.ws('/video-stream', (ws, req) => {
       height: '540'
     }));
 
-    var videoStream = raspividStream({ rotation: 180 });
+    var videoStream = raspividStream({ rotation: 270 });
 
     videoStream.on('data', (data) => {
         ws.send(data, { binary: true }, (error) => { if (error) console.error(error); });
@@ -70,8 +70,8 @@ function try_stop() {
 
 function exec_command(command, on_failure) {
   const mapping = {
-    'fwd': ['p 5 0', 'p 6 0', 'p 12 128', 'p 13 128'],
-    'bwd': ['p 5 128', 'p 6 128', 'p 12 128', 'p 13 128'],
+    'bwd': ['p 5 0', 'p 6 0', 'p 12 128', 'p 13 128'],
+    'fwd': ['p 5 128', 'p 6 128', 'p 12 128', 'p 13 128'],
     'left': ['p 5 0', 'p 6 128', 'p 12 128', 'p 13 128'],
     'right': ['p 5 128', 'p 6 0', 'p 12 128', 'p 13 128'],
     'stop': ['p 12 0', 'p 13 0']
