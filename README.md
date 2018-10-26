@@ -1,13 +1,20 @@
 # Raspberry Pi Robot remote control
 Remote controlled robot with camera. Based on Raspberry Pi Zero. 
 
-<img src="doc/rover-1.jpg" width="40%"/>
-<img src="doc/rover-2.jpg" width="40%"/>
-
+<div style="display: flex;">
+  <div style="flex: 50%; padding: 5px;">  
+    <img src="doc/rover-1.jpg" width="40%"/>
+  </div>
+  <div style="flex: 50%; padding: 5px;">  
+    <img src="doc/rover-2.jpg" width="40%"/>
+  </div>
+</div>
 
 Web interface with selfie:
 
 <img src="doc/rover-selfie.jpg" width="40%"/>
+
+First [video](https://www.youtube.com/watch?v=cPwS0mua0V8).
 
 ## Hardware 
 * Raspberry Pi Zero
